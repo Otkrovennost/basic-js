@@ -1,33 +1,38 @@
 const CustomError = require("../extensions/custom-error");
 
-// const DISCARD_NEXT = '--discard-next';
-// const DISCARD_PREV = '--discard-prev';
-// const DOUBLE_NEXT = '--double-next';
-// const DOUBLE_PREV = '--double-prev';
+const DISCARD_NEXT = '--discard-next';
+const DISCARD_PREV = '--discard-prev';
+const DOUBLE_NEXT = '--double-next';
+const DOUBLE_PREV = '--double-prev';
 
-module.exports = function transform(/*arr*/) {
-  throw new CustomError('Not implemented');
-  // remove line with error and write your code here
-
-  // if(!Array.isArray(arr)) {
-  //   throw Error('It is not array');
-  // }
-
-  // let newArr = arr.slice();
+module.exports = function transform(arr) {
+  if(!Array.isArray(arr)) {
+    throw Error('It is not array');
+  }
   
-  // newArr.forEach((elem) => {
-  //   if((elem === DISCARD_NEXT || elem === DISCARD_PREV || elem === DOUBLE_NEXT || elem === DOUBLE_PREV) && (newArr.indexOf(elem) === 0 || newArr.indexOf(elem) === newArr.length - 1)) {
-  //     newArr.splice(newArr.indexOf(elem), 1);
-  //   } else if (elem === DOUBLE_NEXT) {
-  //     newArr.splice(newArr.indexOf(elem), 1, newArr[newArr.indexOf(elem) + 1]);
-  //   } else if (elem === DOUBLE_PREV) {
-  //     newArr.splice(newArr.indexOf(elem), 1, newArr[newArr.indexOf(elem) - 1]);
-  //   } else if(elem === DISCARD_NEXT) {
-  //     newArr.splice(newArr.indexOf(elem), 2);
-  //   } else if (elem === DISCARD_PREV) {
-  //     newArr.splice(newArr.indexOf(elem) - 1, 2);
-  //   }
-  // });
+  let newArr = [];
 
-  // return newArr;
+  for (let i = 0; i < arr.length; i++) {
+    if (arr[i] === DISCARD_NEXT) {
+      if (arr[i + 2] === DOUBLE_PREV || arr[i + 2] === DISCARD_PREV) {
+        i++;
+      }
+      i++;
+    } else if (arr[i] === DISCARD_PREV) {
+      if (i !== 0) {
+        newArr.pop();
+      }
+    } else if (arr[i] === DOUBLE_NEXT) {
+      if (i < arr.length - 1) {
+        newArr.push(arr[i + 1]);
+      }
+    } else if (arr[i] === DOUBLE_PREV) {
+      if (i !== 0) {
+        newArr.push(arr[i - 1]);
+      }
+    } else {
+      newArr.push(arr[i]);
+    }
+  };
+  return newArr;
 };
